@@ -3,9 +3,11 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
 
 
 # RUN pip install pandas pyarrow
-# COPY  
-
 WORKDIR /app
-COPY pipeline.py pipeline.py
+COPY  pyproject.toml .python-version uv.lock ./
+RUN uv sync --locked --no-install-project
+ENV PATH='/app/.venv/bin:$PATH'
 
-ENTRYPOINT [ "python", "pipeline.py" ]
+COPY pipeline.py .
+
+ENTRYPOINT ["python", "pipeline.py" ]
